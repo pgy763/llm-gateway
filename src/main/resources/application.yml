@@ -1,0 +1,90 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: llm-gateway
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/llmgateway
+    username: llmgateway
+    password: llmgateway
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 3000ms
+
+logging:
+  level:
+    com.pgy.gateway: INFO
+
+gateway:
+  # ---------- 上游模型提供方 ----------
+  # priority 数字越小越优先。请求失败时按 priority 顺序向下尝试，形成"降级链"。
+  # mock 类型不需要密钥，永远置于链尾，保证没有真实密钥时系统也能跑通全流程。
+  providers:
+    - name: mock
+      type: mock
+      models:
+        - mock-fast
+        - mock-normal
+        - mock-flaky
+      priority: 99
+      enabled: true
+      timeout-ms: 30000
+
+    - name: deepseek
+      type: openai-compatible
+      base-url: https://api.deepseek.com/v1
+      api-key: ${DEEPSEEK_API_KEY:}
+      models:
+        - deepseek-chat
+        - deepseek-reasoner
+      priority: 1
+      enabled: true
+      timeout-ms: 60000
+
+    - name: kimi
+      type: openai-compatible
+      base-url: https://api.moonshot.cn/v1
+      api-key: ${KIMI_API_KEY:}
+      models:
+        - moonshot-v1-8k
+        - moonshot-v1-32k
+      priority: 2
+      enabled: true
+      timeout-ms: 60000
+
+  # ---------- 路由与降级 ----------
+  route:
+    max-attempts: 3
+    unhealthy-threshold: 3
+    cooldown-seconds: 30
+
+  # ---------- 限流（令牌桶） ----------
+  rate-limit:
+    enabled: true
+    capacity: 20
+    refill-per-second: 5
+
+  # ---------- 任务编排 ----------
+  task:
+    max-retry: 2
+    review-enabled: true
+    worker-pool-size: 4
+    poll-interval-ms: 2000
