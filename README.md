@@ -134,7 +134,7 @@ curl http://localhost:8080/v1/tasks/task-xxxxxxxx/history
 
 - **JDK 21**（`java -version` 能看到 21 就行）
 - **Docker**（用来起数据库，不想装也可以，见下面说明）
-- **Maven**（或者用 IDE 自带的）
+- ~~Maven~~ **不用单独装** —— 项目自带 Maven Wrapper（`mvnw`），首次运行会自动下载 Maven
 
 ### 第 1 步：启动数据库
 
