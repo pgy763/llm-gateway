@@ -3,6 +3,8 @@
 一个基于 Spring Boot 3 + Java 21 的服务。它要解决的问题是：
 
 > **当一个公司有多个系统都要用 AI 时，怎么把这些调用管起来，而不是各调各的。**
+>
+> 这组内容里的位置：**[接入手册](https://pgy763.github.io/hello-ai-backend/) 讲单个系统怎么接**、**[踩坑手册](https://pgy763.github.io/llm-dev-pitfalls/all) 记接的时候会踩什么**、**这里是接完之后「多系统共用」的那一层**。总入口：[pgy763.github.io](https://pgy763.github.io/)
 
 ---
 

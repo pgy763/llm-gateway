@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # 仓库自带 Maven Wrapper，CI 不需要额外装 Maven。
+      # verify 会跑 src/test 下的状态机测试（13 个用例），
+      # 这些测试纯内存、不依赖 PostgreSQL / Redis，所以不用起 compose
+      - name: Build & test
+        run: ./mvnw -B -ntp -U verify
+
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: llm-gateway-jar
+          path: target/*.jar
+          retention-days: 7
