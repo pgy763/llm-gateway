@@ -1,5 +1,7 @@
 # LLM Gateway · 大模型统一接入与任务编排网关
 
+[![ci](https://github.com/pgy763/llm-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/pgy763/llm-gateway/actions/workflows/ci.yml)
+
 一个基于 Spring Boot 3 + Java 21 的服务。它要解决的问题是：
 
 > **当一个公司有多个系统都要用 AI 时，怎么把这些调用管起来，而不是各调各的。**
